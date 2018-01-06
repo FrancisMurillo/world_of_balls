@@ -1,0 +1,46 @@
+{
+  "name": "world_of_balls",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "prettier": "prettier",
+    "jsonlint": "jsonlint",
+    "precommit": "lint-staged"
+  },
+  "dependencies": {
+    "matter-js": "^0.14.0",
+    "react": "16.0.0",
+    "react-native": "0.51.0",
+    "react-native-game-engine": "^0.7.0",
+    "react-native-sensors": "^2.4.2",
+    "react-redux": "^5.0.6",
+    "recompose": "^0.26.0",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "babel-jest": "22.0.4",
+    "babel-preset-react-native": "4.0.0",
+    "husky": "^0.14.3",
+    "jest": "22.0.4",
+    "jsonlint": "^1.6.2",
+    "lint-staged": "^6.0.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "1.9.2",
+    "react-test-renderer": "16.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "lint-staged": {
+    "*.json": [
+      "jsonlint -i",
+      "git add"
+    ],
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
