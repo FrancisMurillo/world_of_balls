@@ -1,6 +1,22 @@
-import { all, call, fork, put, spawn, takeEvery } from "redux-saga/effects";
+import {
+  all,
+  call,
+  fork,
+  put,
+  select,
+  spawn,
+  takeEvery
+} from "redux-saga/effects";
+import { Client, Message } from "react-native-paho-mqtt";
 
-import { changeAxis, tick, updatePosition } from "./Reducer";
+import config from "./Config";
+import {
+  changeAxis,
+  tick,
+  updatePosition,
+  connect,
+  selfSelector
+} from "./Reducer";
 
 function* roomSaga() {
   yield all([]);
@@ -27,6 +43,39 @@ function* animationSaga() {
   yield all([fork(tickFlow)]);
 }
 
+let client = null;
+
+function* createConnectionFlow() {
+  const self = yield select(selfSelector);
+
+  self.name = "MEOW";
+  if (self && self.name) {
+    const { name } = self;
+
+    client = new Client({ uri: config.websocketHost });
+
+    // client.onConnectionLost = onConnectionLost;
+    // client.onMessageArrived = onMessageArrived;
+
+    client.connect({
+      onSuccess: () => {
+        debugger;
+      }
+    });
+  }
+}
+
+function* pubSubSaga() {
+  yield all([takeEvery(connect, createConnectionFlow)]);
+
+  yield put(connect());
+}
+
 export default function* saga() {
-  yield all([spawn(animationSaga), spawn(roomSaga), spawn(sensorSaga)]);
+  yield all([
+    spawn(animationSaga),
+    spawn(pubSubSaga),
+    spawn(roomSaga),
+    spawn(sensorSaga)
+  ]);
 }

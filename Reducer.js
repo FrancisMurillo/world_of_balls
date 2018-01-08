@@ -59,6 +59,11 @@ export const selfSelector = state => state[selfReducer.key];
 
 export const tick = createAction("ANIMATION/TICK");
 
+export const connect = createAction("PUBSUB/CONNECT");
+export const disconnect = createAction("PUBSUB/DISCONNECT");
+export const send = createAction("PUBSUB/SEND");
+export const receive = createAction("PUBSUB/RECEIVE");
+
 export default combineReducers({
   [membersReducer.key]: membersReducer,
   [selfReducer.key]: selfReducer,
