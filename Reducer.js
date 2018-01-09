@@ -1,5 +1,8 @@
 import { combineReducers } from "redux";
 import { createAction, handleActions } from "redux-actions";
+import { reducer as formReducer } from "redux-form";
+import { NavigationActions } from "react-navigation";
+import { Navigator } from "./Router";
 
 export const changeAxis = createAction("GYROSCOPE/CHANGE_AXIS");
 
@@ -42,18 +45,25 @@ const membersReducer = handleActions(
 );
 membersReducer.key = "members";
 
-const membersSelector = state => state[membersReducer.key];
+export const membersSelector = state => state[membersReducer.key];
 
 export const joinRoom = createAction("SELF/JOIN_ROOM");
+export const updateProfile = createAction("SELF/UPDATE_PROFILE");
 export const updatePosition = createAction("SELF/UPDATE_POSITION");
 
 const selfReducer = handleActions(
   {
+    [updateProfile]: (state, action) => ({
+      ...state,
+      name: action.payload.name,
+      color: action.payload.color
+    }),
     [joinRoom]: (state, action) => state,
     [updatePosition]: (state, action) => state
   },
   {
     name: null,
+    color: null,
     length: null,
     width: null,
     x: null,
@@ -92,8 +102,21 @@ export const delivered = createAction("CHANNEL/DELIVERED");
 export const disconnected = createAction("CHANNEL/DISCONNECTED");
 export const errored = createAction("CHANNEL/ERRORED");
 
+formReducer.key = "form";
+
+const navInitialAction = NavigationActions.navigate({ routeName: "Login" }); // HARD CODED value here
+const navInitialState = Navigator.router.getStateForAction(navInitialAction);
+
+const navReducer = (state = navInitialState, action) =>
+  Navigator.router.getStateForAction(action, state) || state;
+navReducer.key = "nav";
+
+const navSelector = state => state[navReducer.key];
+
 export default combineReducers({
+  [formReducer.key]: formReducer,
   [membersReducer.key]: membersReducer,
+  [navReducer.key]: navReducer,
   [selfReducer.key]: selfReducer,
   [sensorReducer.key]: sensorReducer
 });

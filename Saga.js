@@ -62,10 +62,9 @@ const memoryStorage = {
   }
 };
 
-function* createConnectionFlow() {
+function* createConnectionFlow(_action) {
   const self = yield select(selfSelector);
 
-  self.name = "MEOW";
   if (self && self.name) {
     const { name } = self;
 
@@ -149,8 +148,6 @@ function* channelSaga() {
     takeEvery(send, sendMessageFlow),
     takeEvery(connected, sendInitialStateFlow)
   ]);
-
-  yield put(connect());
 }
 
 export default function* saga() {

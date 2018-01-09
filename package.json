@@ -11,22 +11,28 @@
     "eslint": "eslint"
   },
   "dependencies": {
+    "glamorous-native": "git+https://github.com/robinpowered/glamorous-native.git",
     "lodash": "^4.17.4",
     "matter-js": "^0.14.0",
     "msgpack-lite": "^0.1.26",
     "react": "16.0.0",
     "react-native": "0.51.0",
+    "react-native-color-picker": "^0.4.0",
     "react-native-config": "^0.11.4",
+    "react-native-material-textfield": "^0.11.0",
     "react-native-paho-mqtt": "^0.1.1",
     "react-native-sensors": "^2.4.2",
+    "react-navigation": "^1.0.0-beta.23",
     "react-redux": "^5.0.6",
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-devtools-extension": "^2.13.2",
+    "redux-form": "^7.2.0",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "styled-components": "^2.4.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",

@@ -10,8 +10,7 @@ import {
 } from "react-native";
 
 import Provider from "./Provider";
-
-const App = () => null;
+import App from "./Router";
 
 export default () => (
   <Provider>
