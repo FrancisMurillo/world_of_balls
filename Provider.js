@@ -1,3 +1,4 @@
+import {createSelector} from "reselect";
 import React from "react";
 import { connect } from "react-redux";
 import { Text } from "react-native";
@@ -14,7 +15,7 @@ import { Provider as StoreProvider } from "react-redux";
 import { decorator as injectSensors } from "react-native-sensors";
 
 import store from "./Store";
-import { changeAxis, gyroscopeSelector } from "./Reducer";
+import { changeAxis, sensorSelector } from "./Reducer";
 
 const StateProvider = defaultProps({ store })(StoreProvider);
 
@@ -27,11 +28,16 @@ const SensorProvider = componentCompose(
     ({ Accelerometer, Gyroscope }) => !Accelerometer || !Gyroscope,
     renderNothing
   ),
-  connect(null, { onChangeAxis: changeAxis }),
+    connect(
+        createSelector(
+            sensorSelector,
+            (sensor) => ({ sensor })
+        )
+        , { onChangeAxis: changeAxis }),
   lifecycle({
     componentWillReceiveProps(next) {
-      if (this.props.Gyroscope.timestamp < next.Gyroscope.timestamp - 200) {
-        this.props.onChangeAxis(next.Gyroscope);
+      if (this.props.sensor.timestamp < next.Gyroscope.timestamp - 200) {
+        // this.props.onChangeAxis(next.Gyroscope);
       }
     }
   })
