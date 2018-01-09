@@ -4,17 +4,17 @@ import { createAction, handleActions } from "redux-actions";
 export const changeAxis = createAction("GYROSCOPE/CHANGE_AXIS");
 
 const sensorInitialState = {
-    timestamp: 0,
-    x: null,
-    y: null,
-    z: null
+  timestamp: 0,
+  x: null,
+  y: null,
+  z: null
 };
 
 const sensorReducer = handleActions(
   {
     [changeAxis]: (state, action) => action.payload
   },
-    sensorInitialState
+  sensorInitialState
 );
 sensorReducer.key = "sensor";
 
@@ -68,18 +68,24 @@ export const tick = createAction("ANIMATION/TICK");
 
 export const connect = createAction("CHANNEL/CONNECT");
 export const disconnect = createAction("CHANNEL/DISCONNECT");
-export const send = createAction("CHANNEL/SEND", (topic, message, qos = 0, retained = false) => ({
+export const send = createAction(
+  "CHANNEL/SEND",
+  (topic, message, qos = 0, retained = false) => ({
     topic,
     message,
     qos,
     retained
-}));
-export const receive = createAction("CHANNEL/RECEIVE", ({destinationName, _payloadString, payloadBytes, qos, retained, duplicate}) => ({
-    "topic": destinationName,
-    "message": msgpack.decode(payloadBytes),
+  })
+);
+export const receive = createAction(
+  "CHANNEL/RECEIVE",
+  ({ topic, message, retained, duplicate }) => ({
+    topic,
+    message,
     retained,
     duplicate
-}));
+  })
+);
 
 export const connected = createAction("CHANNEL/CONNECTED");
 export const delivered = createAction("CHANNEL/DELIVERED");
