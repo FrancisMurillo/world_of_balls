@@ -39,7 +39,7 @@ const FormColorPickerWrapper = styled.View`
 `;
 
 const FormColorPickerLabel = styled.Text`
-  fontsize: 16;
+  fontSize: 16;
 `;
 
 const FormColorPicker = ({
@@ -61,17 +61,17 @@ const FormColorPicker = ({
 const SubmitSpinner = styled.ActivityIndicator.attrs({ size: 25 })``;
 
 const SubmitButtonText = styled.Text`
-  textalign: center;
-  fontsize: 22;
-  fontweight: bold;
+  textAlign: center;
+  fontSize: 22;
+  fontWeight: bold;
   color: ${props => props.theme.primaryBackgroundColor};
 `;
 
 const SubmitButtonWrapper = styled.View`
-  justifycontent: center;
-  alignitems: center;
-  paddingvertical: 16;
-  backgroundcolor: ${props =>
+  justifyContent: center;
+  alignItems: center;
+  paddingVertical: 16;
+  backgroundColor: ${props =>
     props.theme[props.backgroundColor || "primaryColor"]};
 `;
 
@@ -100,15 +100,15 @@ export const SubmitButton = ({
 const Screen = styled.View`
   width: 100%;
   height: 100%;
-  paddinghorizontal: 16px;
-  paddingvertical: 16px;
+  paddingHorizontal: 16px;
+  paddingVertical: 16px;
 `;
 
 export const FormError = styled.Text`
-  paddingvertical: 10;
-  textalign: center;
-  fontsize: 15;
-  fontweight: bold;
+  paddingVertical: 10;
+  textAlign: center;
+  fontSize: 15;
+  fontWeight: bold;
   color: ${props => props.theme.errorTextColor};
 `;
 

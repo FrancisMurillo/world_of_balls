@@ -17,7 +17,7 @@ import {
 import { changeAxis } from "./Action";
 
 const Block = styled.View`
-  backgroundcolor: black;
+  backgroundColor: black;
 `;
 
 const Screen = styled.View`
@@ -26,7 +26,7 @@ const Screen = styled.View`
 `;
 
 const World = styled.View`
-  backgroundcolor: white;
+  backgroundColor: white;
 `;
 
 const GameScreen = ({ dimensions }) => {
