@@ -1,13 +1,6 @@
 import { toClass } from "recompose";
 import React, { Component } from "react";
-import {
-  StatusBar,
-  Dimensions,
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { StatusBar, Platform, StyleSheet, Text, View } from "react-native";
 
 import Provider from "./Provider";
 import App from "./Router";

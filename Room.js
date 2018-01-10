@@ -1,11 +1,23 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Dimensions } from "react-native";
 import { createSelector } from "reselect";
 import styled from "styled-components/native";
+import { decorator as injectSensors } from "react-native-sensors";
+import {
+  compose as componentCompose,
+  defaultProps,
+  withProps,
+  lifecycle,
+  renderNothing,
+  renderComponent,
+  withState
+} from "recompose";
+
+import { changeAxis } from "./Action";
 
 const Block = styled.View`
-  flex: 1;
-  background-color: black;
+  backgroundcolor: black;
 `;
 
 const Screen = styled.View`
@@ -14,16 +26,51 @@ const Screen = styled.View`
 `;
 
 const World = styled.View`
-  flex: 2;
-  background-color: white;
+  backgroundcolor: white;
 `;
 
-const GameScreen = () => (
-  <Screen>
-    <Block />
-    <World />
-    <Block />
-  </Screen>
+const GameScreen = ({ dimensions }) => {
+  const { width, height } = dimensions;
+
+  const landscape = width > height;
+  const { size, edge } = landscape
+    ? {
+        size: height,
+        edge: (width - height) / 2
+      }
+    : {
+        size: width,
+        edge: (height - width) / 2
+      };
+
+  const blockStyle = landscape ? { width: edge } : { height: edge };
+
+  return (
+    <Screen>
+      <Block style={blockStyle} />
+      <World style={{ width: size, height: size }} />
+      <Block style={blockStyle} />
+    </Screen>
+  );
+};
+
+const injectSensorProps = componentCompose(
+  injectSensors({
+    Accelerometer: true,
+    Gyroscope: true
+  }),
+  connect(createSelector(state => state["sensor"], sensor => ({ sensor })), {
+    onChangeAxis: changeAxis
+  }),
+  lifecycle({
+    componentWillReceiveProps(next) {
+      if (next.Gyroscope && next.Accelerometer) {
+        if (this.props.sensor.timestamp < next.Gyroscope.timestamp - 500) {
+          // this.props.onChangeAxis(next.Gyroscope);
+        }
+      }
+    }
+  })
 );
 
 const selector = createSelector(
@@ -34,4 +81,8 @@ const selector = createSelector(
   })
 );
 
-export default connect(selector, null)(GameScreen);
+export default componentCompose(
+  connect(selector, null),
+  withProps(_props => ({ dimensions: Dimensions.get("window") })),
+  injectSensorProps
+)(GameScreen);

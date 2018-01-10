@@ -6,8 +6,6 @@ import styled from "styled-components/native";
 import { ThemeProvider as BaseThemeProvider } from "styled-components";
 
 import {
-  compose as componentCompose,
-  branch,
   defaultProps,
   lifecycle,
   renderNothing,
@@ -15,33 +13,10 @@ import {
   withState
 } from "recompose";
 import { Provider as StoreProvider } from "react-redux";
-import { decorator as injectSensors } from "react-native-sensors";
 
 import store from "./Store";
-import { changeAxis, sensorSelector } from "./Reducer";
 
 const StateProvider = defaultProps({ store })(StoreProvider);
-
-const SensorProvider = componentCompose(
-  injectSensors({
-    Accelerometer: true,
-    Gyroscope: true
-  }),
-  branch(
-    ({ Accelerometer, Gyroscope }) => !Accelerometer || !Gyroscope,
-    renderNothing
-  ),
-  connect(createSelector(sensorSelector, sensor => ({ sensor })), {
-    onChangeAxis: changeAxis
-  }),
-  lifecycle({
-    componentWillReceiveProps(next) {
-      if (this.props.sensor.timestamp < next.Gyroscope.timestamp - 200) {
-        this.props.onChangeAxis(next.Gyroscope);
-      }
-    }
-  })
-)(({ children }) => children);
 
 const theme = {
   primaryColor: "#095697",

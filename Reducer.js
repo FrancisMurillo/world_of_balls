@@ -4,14 +4,21 @@ import { reducer as formReducer } from "redux-form";
 import { NavigationActions } from "react-navigation";
 import { Navigator } from "./Router";
 
-export const changeAxis = createAction("GYROSCOPE/CHANGE_AXIS");
-
 const sensorInitialState = {
   timestamp: 0,
   x: null,
   y: null,
   z: null
 };
+
+import {
+  changeAxis,
+  joinRoom,
+  updateMembers,
+  updateMemberPosition,
+  addMember,
+  removeMember
+} from "./Action";
 
 const sensorReducer = handleActions(
   {
@@ -23,49 +30,82 @@ sensorReducer.key = "sensor";
 
 export const sensorSelector = state => state[sensorReducer.key];
 
-export const addMember = createAction("MEMBER/ADD_MEMBER");
-export const updateMemberPosition = createAction("MEMBER/UPDATE_POSITION");
-export const removeMember = createAction("MEMBER/REMOVE_MEMBER");
-
 const memberInitialState = {
   name: null,
-  length: null,
-  width: null,
+  size: null,
+  color: null,
   x: null,
   y: null
 };
 
 const membersReducer = handleActions(
   {
-    [addMember]: (state, action) => state,
+    [joinRoom]: (state, action) => ({
+      ...state,
+      currentName: action.payload.name
+    }),
+    [addMember]: (state, action) => ({
+      ...state,
+      members: state.members
+        .filter(({ name }) => name !== action.payload.name)
+        .concat(action.payload)
+        .filter(({ name }) => name !== state.currentName)
+    }),
     [updateMemberPosition]: (state, action) => state,
-    [removeMember]: (state, action) => state
+    [removeMember]: (state, action) => ({
+      ...state,
+      members: members.filter(({ name }) => name !== action.payload)
+    }),
+    [updateMemberPosition]: (state, action) => ({
+      ...state,
+      members: action.payload.map(member => {
+        if (member.name === action.payload.name) {
+          return {
+            ...member,
+            x: action.payload.x,
+            y: action.payload.y
+          };
+        } else {
+          return member;
+        }
+      })
+    }),
+    [updateMembers]: (state, action) => ({
+      ...state,
+      members: action.payload.filter(({ name }) => name !== state.currentName)
+    })
   },
-  []
+  {
+    currentName: null,
+    members: []
+  }
 );
 membersReducer.key = "members";
 
 export const membersSelector = state => state[membersReducer.key];
 
-export const joinRoom = createAction("SELF/JOIN_ROOM");
-export const updateProfile = createAction("SELF/UPDATE_PROFILE");
 export const updatePosition = createAction("SELF/UPDATE_POSITION");
 
 const selfReducer = handleActions(
   {
-    [updateProfile]: (state, action) => ({
+    [joinRoom]: (state, action) => ({
       ...state,
+      x: 0.5,
+      y: 0.5,
       name: action.payload.name,
-      color: action.payload.color
+      color: action.payload.color,
+      size: action.payload.size
     }),
-    [joinRoom]: (state, action) => state,
-    [updatePosition]: (state, action) => state
+    [updatePosition]: (state, action) => ({
+      ...state,
+      x: action.payload.x,
+      y: action.payload.y
+    })
   },
   {
     name: null,
     color: null,
-    length: null,
-    width: null,
+    size: null,
     x: null,
     y: null
   }

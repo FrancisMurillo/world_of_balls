@@ -12,7 +12,6 @@ import msgpack from "msgpack-lite";
 
 import config from "./Config";
 import {
-  changeAxis,
   tick,
   updatePosition,
   connect,
@@ -21,15 +20,21 @@ import {
   errored,
   delivered,
   receive,
-  send
+  send,
+  disconnected
 } from "./Reducer";
+import { changeAxis, updateMembers, addMember, removeMember } from "./Action";
 
 function* roomSaga() {
   yield all([]);
 }
 
 function* updatePositionFlow(action) {
-  yield put(updatePosition(action.payload));
+  const self = yield select(selfSelector);
+
+  if (self.name) {
+    yield put(updatePosition(action.payload));
+  }
 }
 
 function* sensorSaga() {
@@ -106,8 +111,8 @@ function* createConnectionFlow(_action) {
         );
       });
 
-      const lastWillMessage = new Message("LEAVE");
-      lastWillMessage.destinationName = "room";
+      const lastWillMessage = new Message(self.name);
+      lastWillMessage.destinationName = "room/leave";
 
       client
         .connect({
@@ -118,7 +123,9 @@ function* createConnectionFlow(_action) {
         .then(() => {
           return Promise.all([
             client.subscribe("room", config.channelOptions),
-            client.subscribe("room/position", config.channelOptions)
+            client.subscribe("room/position", config.channelOptions),
+            client.subscribe("room/members", config.channelOptions),
+            client.subscribe("room/leave", config.channelOptions)
           ]);
         })
         .then(() => {
@@ -132,7 +139,10 @@ function* createConnectionFlow(_action) {
 }
 
 function* sendInitialStateFlow(action) {
-  yield put(send("room", "stuff", 1));
+  const self = yield select(selfSelector);
+
+  const { name, color, size, x, y } = self;
+  yield put(send("room", { name, color, size, x, y }, 1));
 }
 
 function* sendMessageFlow(action) {
@@ -142,11 +152,33 @@ function* sendMessageFlow(action) {
   }
 }
 
+function* receiveSwitchFlow(action) {
+  const { topic, message } = action.payload;
+
+  switch (topic) {
+    case "room":
+      yield put(addMember(message));
+      break;
+    case "room/position":
+      yield put(updateMemberPosition(message));
+      break;
+    case "room/members":
+      yield put(updateMembers(message));
+      break;
+    case "room/leave":
+      yield put(removeMember(message));
+      break;
+    default:
+    // NOOP
+  }
+}
+
 function* channelSaga() {
   yield all([
     takeEvery(connect, createConnectionFlow),
     takeEvery(send, sendMessageFlow),
-    takeEvery(connected, sendInitialStateFlow)
+    takeEvery(connected, sendInitialStateFlow),
+    takeEvery(receive, receiveSwitchFlow)
   ]);
 }
 

@@ -10,6 +10,7 @@ import styled from "styled-components/native";
 import { reduxForm, Field } from "redux-form";
 
 import { updateProfile, connect } from "./Reducer";
+import { joinRoom } from "./Action";
 
 const TextField = styled(BaseTextField).attrs({
   fontSize: 16,
@@ -143,11 +144,13 @@ export default reduxForm({
   onSubmit: (values, _dispatch, _props) => Promise.resolve(values),
   onSubmitSuccess: (result, dispatch, _props) => {
     dispatch(
-      updateProfile({
+      joinRoom({
         name: result.name,
-        color: fromHsv(result.color)
+        color: fromHsv(result.color),
+        size: Math.floor(Math.random() * 100) + 20
       })
     );
+    dispatch(connect());
 
     dispatch(
       NavigationActions.reset({
@@ -160,7 +163,9 @@ export default reduxForm({
         ]
       })
     );
-
-    dispatch(connect());
+  },
+  initialValues: {
+    name: "FnMurillo",
+    color: "#123456"
   }
 })(FormScreen);
