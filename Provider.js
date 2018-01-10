@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Text } from "react-native";
 import styled from "styled-components/native";
+import orientation from "react-native-orientation";
 import { ThemeProvider as BaseThemeProvider } from "styled-components";
 
 import {

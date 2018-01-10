@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Dimensions } from "react-native";
 import { createSelector } from "reselect";
 import styled from "styled-components/native";
-import orientation from "react-native-orientation";
 import { decorator as injectSensors } from "react-native-sensors";
 import {
   compose as componentCompose,
