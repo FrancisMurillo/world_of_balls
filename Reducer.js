@@ -18,7 +18,8 @@ import {
   updateMemberPosition,
   addMember,
   removeMember,
-  connected
+  connected,
+  errored
 } from "./Action";
 
 const sensorReducer = handleActions(
@@ -145,7 +146,6 @@ export const receive = createAction(
 
 export const delivered = createAction("CHANNEL/DELIVERED");
 export const disconnected = createAction("CHANNEL/DISCONNECTED");
-export const errored = createAction("CHANNEL/ERRORED");
 
 formReducer.key = "form";
 

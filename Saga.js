@@ -18,7 +18,6 @@ import {
   updatePosition,
   connect,
   selfSelector,
-  errored,
   delivered,
   receive,
   send,
@@ -30,7 +29,8 @@ import {
   updateMembers,
   addMember,
   removeMember,
-  updateMemberPosition
+  updateMemberPosition,
+  errored
 } from "./Action";
 
 const showAlert = message => {
@@ -49,7 +49,7 @@ function* updatePositionFlow(action) {
 
   const { x: alpha, y: beta, z: gamma } = action.payload;
 
-  const deltaX = beta;
+  const deltaX = -beta;
   const deltaY = gamma;
 
   const positionX = size * self.x + deltaX * 50;
@@ -217,7 +217,7 @@ function* revertStateFlow(_action) {
       index: 0,
       actions: [
         NavigationActions.navigate({
-          routeName: "Room",
+          routeName: "Login",
           params: {}
         })
       ]

@@ -6,6 +6,7 @@ import styled from "styled-components/native";
 import { ThemeProvider as BaseThemeProvider } from "styled-components";
 
 import {
+  compose as componentCompose,
   defaultProps,
   lifecycle,
   renderNothing,
@@ -16,7 +17,14 @@ import { Provider as StoreProvider } from "react-redux";
 
 import store from "./Store";
 
-const StateProvider = defaultProps({ store })(StoreProvider);
+const StateProvider = componentCompose(
+  lifecycle({
+    componentWillMount() {
+      orientation.lockToLandscapeLeft();
+    }
+  }),
+  defaultProps({ store })
+)(StoreProvider);
 
 const theme = {
   primaryColor: "#095697",

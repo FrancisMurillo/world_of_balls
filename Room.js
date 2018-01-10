@@ -103,12 +103,6 @@ const selector = createSelector(
   })
 );
 
-export default componentCompose(
-  lifecycle({
-    componentWillMount() {
-      orientation.lockToLandscapeLeft();
-    }
-  }),
-  injectSensorProps,
-  connect(selector, null)
-)(GameScreen);
+export default componentCompose(injectSensorProps, connect(selector, null))(
+  GameScreen
+);
