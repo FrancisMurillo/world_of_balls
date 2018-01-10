@@ -7,6 +7,7 @@ import {
   spawn,
   takeEvery
 } from "redux-saga/effects";
+import { Dimensions } from "react-native";
 import { Client, Message } from "react-native-paho-mqtt";
 import msgpack from "msgpack-lite";
 
@@ -16,14 +17,20 @@ import {
   updatePosition,
   connect,
   selfSelector,
-  connected,
   errored,
   delivered,
   receive,
   send,
   disconnected
 } from "./Reducer";
-import { changeAxis, updateMembers, addMember, removeMember } from "./Action";
+import {
+  connected,
+  changeAxis,
+  updateMembers,
+  addMember,
+  removeMember,
+  updateMemberPosition
+} from "./Action";
 
 function* roomSaga() {
   yield all([]);
@@ -32,13 +39,38 @@ function* roomSaga() {
 function* updatePositionFlow(action) {
   const self = yield select(selfSelector);
 
-  if (self.name) {
-    yield put(updatePosition(action.payload));
-  }
+  const { width, height } = Dimensions.get("window");
+  const size = width > height ? height : width;
+
+  const { Common } = matter;
+  const { x: _alpha, y: beta, z: gamma } = action.payload;
+
+  const deltaX = -gamma;
+  const deltaY = beta;
+
+  const positionX = size * self.x + deltaX * 50;
+  const positionY = size * self.y + deltaY * 50;
+
+  console.log("GYRO", _alpha, beta, gamma);
+  yield put(
+    updatePosition({
+      name: self.name,
+      x: Math.max(0, Math.min(size, positionX)) / size,
+      y: Math.max(0, Math.min(size, positionY)) / size
+    })
+  );
+}
+
+function* updateServerFlow(action) {
+  const { name, x, y } = action.payload;
+  yield put(send("room/position", { name, x, y }, 0));
 }
 
 function* sensorSaga() {
-  yield all([takeEvery(changeAxis, updatePositionFlow)]);
+  yield all([
+    takeEvery(changeAxis, updatePositionFlow),
+    takeEvery(updatePosition, updateServerFlow)
+  ]);
 }
 
 const requestFrame = () => new Promise(res => requestAnimationFrame(res));
@@ -51,7 +83,7 @@ function* tickFlow() {
 }
 
 function* animationSaga() {
-  yield all([fork(tickFlow)]);
+  // yield all([fork(tickFlow)]);
 }
 
 let client = null;
@@ -146,7 +178,9 @@ function* sendInitialStateFlow(action) {
 }
 
 function* sendMessageFlow(action) {
-  if (client) {
+  const self = yield select(selfSelector);
+
+  if (client && self.connected) {
     const { topic, message, qos, retained } = action.payload;
     client.send(topic, msgpack.encode(message), qos, retained);
   }

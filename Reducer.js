@@ -17,7 +17,8 @@ import {
   updateMembers,
   updateMemberPosition,
   addMember,
-  removeMember
+  removeMember,
+  connected
 } from "./Action";
 
 const sensorReducer = handleActions(
@@ -58,7 +59,7 @@ const membersReducer = handleActions(
     }),
     [updateMemberPosition]: (state, action) => ({
       ...state,
-      members: action.payload.map(member => {
+      members: state.members.map(member => {
         if (member.name === action.payload.name) {
           return {
             ...member,
@@ -96,6 +97,10 @@ const selfReducer = handleActions(
       color: action.payload.color,
       size: action.payload.size
     }),
+    [connected]: (state, _action) => ({
+      ...state,
+      connected: true
+    }),
     [updatePosition]: (state, action) => ({
       ...state,
       x: action.payload.x,
@@ -106,6 +111,7 @@ const selfReducer = handleActions(
     name: null,
     color: null,
     size: null,
+    connected: false,
     x: null,
     y: null
   }
@@ -137,7 +143,6 @@ export const receive = createAction(
   })
 );
 
-export const connected = createAction("CHANNEL/CONNECTED");
 export const delivered = createAction("CHANNEL/DELIVERED");
 export const disconnected = createAction("CHANNEL/DISCONNECTED");
 export const errored = createAction("CHANNEL/ERRORED");

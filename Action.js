@@ -8,3 +8,5 @@ export const updateMembers = createAction("MEMBER/UPDATE_MEMBERS");
 export const updateMemberPosition = createAction("MEMBER/UPDATE_POSITION");
 
 export const joinRoom = createAction("SELF/JOIN_ROOM");
+
+export const connected = createAction("CHANNEL/CONNECTED");

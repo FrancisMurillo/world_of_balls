@@ -169,8 +169,10 @@ export default reduxForm({
       })
     );
   },
-  initialValues: {
-    name: "FnMurillo",
-    color: "#123456"
-  }
+  initialValues: __DEV__
+    ? {
+        name: "FnMurillo",
+        color: "#123456"
+      }
+    : {}
 })(FormScreen);
