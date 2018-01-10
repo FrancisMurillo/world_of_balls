@@ -106,7 +106,7 @@ const selector = createSelector(
 export default componentCompose(
   lifecycle({
     componentWillMount() {
-      orientation.lockToLandscape();
+      orientation.lockToLandscapeLeft();
     }
   }),
   injectSensorProps,

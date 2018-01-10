@@ -7,7 +7,8 @@ import {
   spawn,
   takeEvery
 } from "redux-saga/effects";
-import { Dimensions } from "react-native";
+import { NavigationActions } from "react-navigation";
+import { Dimensions, ToastAndroid } from "react-native";
 import { Client, Message } from "react-native-paho-mqtt";
 import msgpack from "msgpack-lite";
 
@@ -32,6 +33,10 @@ import {
   updateMemberPosition
 } from "./Action";
 
+const showAlert = message => {
+  ToastAndroid.show(message, ToastAndroid.SHORT);
+};
+
 function* roomSaga() {
   yield all([]);
 }
@@ -42,11 +47,10 @@ function* updatePositionFlow(action) {
   const { width, height } = Dimensions.get("window");
   const size = width > height ? height : width;
 
-  const { Common } = matter;
-  const { x: _alpha, y: beta, z: gamma } = action.payload;
+  const { x: alpha, y: beta, z: gamma } = action.payload;
 
-  const deltaX = -gamma;
-  const deltaY = beta;
+  const deltaX = beta;
+  const deltaY = gamma;
 
   const positionX = size * self.x + deltaX * 50;
   const positionY = size * self.y + deltaY * 50;
@@ -148,7 +152,7 @@ function* createConnectionFlow(_action) {
       client
         .connect({
           ...config.connectionOptions,
-          reconnect: true,
+          reconnect: false,
           willMessage: lastWillMessage
         })
         .then(() => {
@@ -160,6 +164,7 @@ function* createConnectionFlow(_action) {
           ]);
         })
         .then(() => {
+          showAlert("You are now connected to the server");
           dispatch(connected());
         })
         .catch(error => {
@@ -206,11 +211,29 @@ function* receiveSwitchFlow(action) {
   }
 }
 
+function* revertStateFlow(_action) {
+  yield put(
+    NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: "Room",
+          params: {}
+        })
+      ]
+    })
+  );
+
+  showAlert("You been disconnected");
+}
+
 function* channelSaga() {
   yield all([
     takeEvery(connect, createConnectionFlow),
     takeEvery(send, sendMessageFlow),
     takeEvery(connected, sendInitialStateFlow),
+    takeEvery(disconnected, revertStateFlow),
+    takeEvery(errored, revertStateFlow),
     takeEvery(receive, receiveSwitchFlow)
   ]);
 }
