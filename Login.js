@@ -38,6 +38,7 @@ const FormColorPickerWrapper = styled.View`
   flex: 1;
 `;
 
+// prettier-ignore
 const FormColorPickerLabel = styled.Text`
   fontSize: 16;
 `;
@@ -60,6 +61,7 @@ const FormColorPicker = ({
 );
 const SubmitSpinner = styled.ActivityIndicator.attrs({ size: 25 })``;
 
+// prettier-ignore
 const SubmitButtonText = styled.Text`
   textAlign: center;
   fontSize: 22;
@@ -67,6 +69,7 @@ const SubmitButtonText = styled.Text`
   color: ${props => props.theme.primaryBackgroundColor};
 `;
 
+// prettier-ignore
 const SubmitButtonWrapper = styled.View`
   justifyContent: center;
   alignItems: center;
@@ -97,6 +100,7 @@ export const SubmitButton = ({
   );
 };
 
+// prettier-ignore
 const Screen = styled.View`
   width: 100%;
   height: 100%;
@@ -104,6 +108,7 @@ const Screen = styled.View`
   paddingVertical: 16px;
 `;
 
+// prettier-ignore
 export const FormError = styled.Text`
   paddingVertical: 10;
   textAlign: center;

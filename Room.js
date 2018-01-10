@@ -16,6 +16,7 @@ import {
 
 import { changeAxis } from "./Action";
 
+// prettier-ignore
 const Block = styled.View`
   backgroundColor: black;
 `;
@@ -25,6 +26,7 @@ const Screen = styled.View`
   height: 100%;
 `;
 
+// prettier-ignore
 const World = styled.View`
   backgroundColor: white;
 `;
