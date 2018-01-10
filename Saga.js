@@ -51,7 +51,6 @@ function* updatePositionFlow(action) {
   const positionX = size * self.x + deltaX * 50;
   const positionY = size * self.y + deltaY * 50;
 
-  console.log("GYRO", _alpha, beta, gamma);
   yield put(
     updatePosition({
       name: self.name,
