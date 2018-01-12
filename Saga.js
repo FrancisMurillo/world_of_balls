@@ -7,6 +7,7 @@ import {
   spawn,
   takeEvery
 } from "redux-saga/effects";
+import { throttle } from "redux-saga";
 import { NavigationActions } from "react-navigation";
 import { Dimensions, ToastAndroid } from "react-native";
 import { Client, Message } from "react-native-paho-mqtt";
@@ -72,7 +73,7 @@ function* updateServerFlow(action) {
 function* sensorSaga() {
   yield all([
     takeEvery(changeAxis, updatePositionFlow),
-    takeEvery(updatePosition, updateServerFlow)
+    throttle(300, updatePosition, updateServerFlow)
   ]);
 }
 
